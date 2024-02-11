@@ -1,5 +1,7 @@
 // ** React Imports
 import { useState } from 'react'
+import { ToastContainer,toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -21,8 +23,13 @@ import KeyOutline from 'mdi-material-ui/KeyOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 import LockOpenOutline from 'mdi-material-ui/LockOpenOutline'
 
-const TabSecurity = () => {
+const TabSecurity = ({info}) => {
   // ** States
+  const [password,setPass] = useState()
+  const [newPass,setNewPass] = useState()
+  const [ConPass,setConPass] = useState()
+  
+
   const [values, setValues] = useState({
     newPassword: '',
     currentPassword: '',
@@ -35,6 +42,7 @@ const TabSecurity = () => {
   // Handle Current Password
   const handleCurrentPasswordChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value })
+    setPass(event.target.value)
   }
 
   const handleClickShowCurrentPassword = () => {
@@ -48,6 +56,7 @@ const TabSecurity = () => {
   // Handle New Password
   const handleNewPasswordChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value })
+    setNewPass(event.target.value)
   }
 
   const handleClickShowNewPassword = () => {
@@ -61,6 +70,7 @@ const TabSecurity = () => {
   // Handle Confirm New Password
   const handleConfirmNewPasswordChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value })
+    setConPass(event.target.value)
   }
 
   const handleClickShowConfirmNewPassword = () => {
@@ -71,8 +81,65 @@ const TabSecurity = () => {
     event.preventDefault()
   }
 
+  const handleSubmit = async(e)=>{
+    e.preventDefault()
+
+    if(newPass == ConPass){
+        const res = await fetch(`http://localhost:3000/api/admins/${info?.userId}`,{
+        method:"POST",
+        headers:{
+            'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+            password,
+            newPass,
+        })
+      })
+      const res2 = await res.json()
+      if(res2.error){
+        toast.error('Wrong Password!', {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "colored",
+          });
+      }else{
+        toast.success('Password Updated!', {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "colored",
+        });
+        setValues({ ...values, currentPassword: '', newPassword: '', confirmNewPassword: ''})
+        
+      }
+    }else{
+      toast.error('Password Not Matched!', {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "colored",
+        });
+    }
+
+
+  }
+
   return (
-    <form>
+    <form onSubmit={(e)=>{handleSubmit(e)}}>
+      <ToastContainer/>
       <CardContent sx={{ paddingBottom: 0 }}>
         <Grid container spacing={5}>
           <Grid item xs={12} sm={6}>
@@ -165,43 +232,25 @@ const TabSecurity = () => {
         </Grid>
       </CardContent>
 
+      {newPass != ConPass &&  
+      <CardContent>
+        <Grid item xs={12} sx={{paddingLeft:"10px",color:"red",fontWeight:"bold"}}>
+          <p>Password Doesn't Matched!</p>
+        </Grid>
+      </CardContent>}
+      {newPass && newPass == ConPass &&
+      <CardContent>
+        <Grid item xs={12} sx={{paddingLeft:"10px",color:"green",fontWeight:"bold"}}>
+          <p>Password Matched!</p>
+        </Grid>
+      </CardContent>}
+
       <Divider sx={{ margin: 0 }} />
 
       <CardContent>
-        <Box sx={{ mt: 1.75, display: 'flex', alignItems: 'center' }}>
-          <KeyOutline sx={{ marginRight: 3 }} />
-          <Typography variant='h6'>Two-factor authentication</Typography>
-        </Box>
-
-        <Box sx={{ mt: 5.75, display: 'flex', justifyContent: 'center' }}>
-          <Box
-            sx={{
-              maxWidth: 368,
-              display: 'flex',
-              textAlign: 'center',
-              alignItems: 'center',
-              flexDirection: 'column'
-            }}
-          >
-            <Avatar
-              variant='rounded'
-              sx={{ width: 48, height: 48, color: 'common.white', backgroundColor: 'primary.main' }}
-            >
-              <LockOpenOutline sx={{ fontSize: '1.75rem' }} />
-            </Avatar>
-            <Typography sx={{ fontWeight: 600, marginTop: 3.5, marginBottom: 3.5 }}>
-              Two factor authentication is not enabled yet.
-            </Typography>
-            <Typography variant='body2'>
-              Two-factor authentication adds an additional layer of security to your account by requiring more than just
-              a password to log in. Learn more.
-            </Typography>
-          </Box>
-        </Box>
-
         <Box sx={{ mt: 11 }}>
-          <Button variant='contained' sx={{ marginRight: 3.5 }}>
-            Save Changes
+          <Button type='submit' variant='contained' sx={{ marginRight: 3.5 }}>
+            Change Password
           </Button>
           <Button
             type='reset'

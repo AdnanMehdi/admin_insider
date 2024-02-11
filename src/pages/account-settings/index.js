@@ -1,5 +1,7 @@
 // ** React Imports
 import { useState } from 'react'
+import { parseCookies } from 'nookies'
+import jwt from 'jsonwebtoken'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -45,6 +47,11 @@ const AccountSettings = () => {
   // ** State
   const [value, setValue] = useState('account')
 
+  //getting cookies from nookies
+ const {token} = parseCookies()
+ const cookie = jwt.decode(token,process.env.JWT_SECRET)
+ 
+
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
@@ -75,22 +82,13 @@ const AccountSettings = () => {
               </Box>
             }
           />
-          {/* <Tab
-            value='info'
-            label={
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <InformationOutline />
-                <TabName>Info</TabName>
-              </Box>
-            }
-          /> */}
         </TabList>
 
         <TabPanel sx={{ p: 0 }} value='account'>
-          <TabAccount />
+          <TabAccount info={cookie}/>
         </TabPanel>
         <TabPanel sx={{ p: 0 }} value='security'>
-          <TabSecurity />
+          <TabSecurity info={cookie}/>
         </TabPanel>
         {/* <TabPanel sx={{ p: 0 }} value='info'>
           <TabInfo />

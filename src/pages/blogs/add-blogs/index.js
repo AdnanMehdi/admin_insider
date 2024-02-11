@@ -7,7 +7,12 @@ import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
+import Switch from '@mui/material/Switch';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import { useState } from 'react'
+import { ToastContainer,toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 
 export default function AddBlogs(){
@@ -16,6 +21,7 @@ export default function AddBlogs(){
     const [tags,setTags] = useState("")
     const [banner,setBanner] = useState()
     const [content,setContent] = useState("")
+    const [checked,setChecked] = useState("")
     let imageUrl = {}
 
     const handleSubmit= async (e)=> {
@@ -33,15 +39,35 @@ export default function AddBlogs(){
                 title,
                 tags,
                 banner:imageUrl,
-                content
+                content,
+                priority:checked,
+                type:"Blogs"
             })
         })
         const res2 = await res.json()
         if(res2.error){
-            console.log("Error Server")
+            toast.error('Something went wrong!!', {
+                position: "top-center",
+                autoClose: 1500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "colored",
+                });
         }
         else{
-            console.log("Success")
+            toast.success(' Login Success!', {
+                position: "top-center",
+                autoClose: 1500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "colored",
+            });
 
             setTitle("")
             setTags("")
@@ -70,6 +96,7 @@ export default function AddBlogs(){
 
     return(
         <Card>
+            <ToastContainer/>
             <CardContent>
                 <Grid>
                     <h2>New Blog</h2>
@@ -81,12 +108,18 @@ export default function AddBlogs(){
                         <Grid item xs={12} sm={6}>
                         <TextField required fullWidth label='Tags' value={tags} onChange={(e)=>{setTags(e.target.value)}} />
                         </Grid>
-                        <Grid item xs={12} sm={8}>
+                        <Grid item xs={12} sm={6}>
                             <label style={{fontWeight:"bold"}}> Banner Image : </label>
                             <input type='file' accept='image/*' onChange={(e)=>{setBanner(e.target.files)}}/>
                         {/* <TextField required fullWidth type='url' label='Banner Image Url' 
                         value={banner} onChange={(e)=>{setBanner(e.target.value)}}/> */}
                         </Grid>
+                        <Grid item xs={12} sm={4}>
+                        <FormGroup>
+                        <FormControlLabel control={<Switch checked={checked} onChange={()=>setChecked(event.target.checked)} 
+                        color="primary"/>} label="Priority" labelPlacement="start" />
+                        </FormGroup>
+                        </Grid>  
                         <Grid item xs={12}>
                         <TextField required fullWidth multiline rows={12} type='message' label='Content'
                         value={content} onChange={(e)=>{setContent(e.target.value)}}/>

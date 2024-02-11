@@ -9,7 +9,7 @@ const CardImgTop = ({blogs}) => {
   // console.log(blogs)
 
   return (
-    blogs.map((item)=>{
+    blogs?.map((item)=>{
         return(
           <Card key={item._id} style={{width:"300px"}} >
             {item.status == "pending" ?(<div style={myStyles.status}>{item.status}</div>):

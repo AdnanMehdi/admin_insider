@@ -1,4 +1,7 @@
+import Mongoose from '../../../../helpers/mongoose'
 import Video from '../../../../models/video'
+
+Mongoose()
 
 export default async (req,res)=>{
     switch(req.method){
@@ -30,14 +33,15 @@ const deleteVideo = async (req,res)=>{
 
 const updateVideo = async(req,res) =>{
     const {pid} = req.query
-    const {title,tags,link,status} = req.body
+    const {title,tags,link,status,priority} = req.body
     try{
         await Video.findByIdAndUpdate({_id:pid},{
             $set:{
                 title,
                 tags,
                 link,
-                status
+                status,
+                priority
             }
         })
 

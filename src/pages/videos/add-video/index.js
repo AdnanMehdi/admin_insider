@@ -7,7 +7,12 @@ import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
+import Switch from '@mui/material/Switch';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import { useState } from 'react'
+import { ToastContainer,toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 
 export default function AddVideo(){
@@ -15,11 +20,7 @@ export default function AddVideo(){
     const [title,setTitle] = useState("")
     const [link,setLink] = useState("")
     const [tags,setTags] = useState("")
-
-    
-    // link.length 
-    // const newLink = link.replace('watch?v=','embed/')
-    // console.log(newLink)
+    const [checked,setChecked] = useState("")
 
     const handleSubmit = async(e)=>{
         e.preventDefault()
@@ -34,15 +35,35 @@ export default function AddVideo(){
             body:JSON.stringify({
                 title,
                 link,
-                tags
+                tags,
+                priority:checked,
+                type:"Videos"
             })
         })
         const res2 = await res.json()
         if(res2.error){
-            console.log("Error")
+            toast.error('Something went wrong!', {
+                position: "top-center",
+                autoClose: 1500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "colored",
+                });
         }
         else{
-            console.log("Success")
+            toast.success('Video Uploaded!', {
+                position: "top-center",
+                autoClose: 1500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "colored",
+            });
             setTitle(""),
             setLink("")
             setTags("")
@@ -52,6 +73,7 @@ export default function AddVideo(){
 
     return(
         <Card>
+            <ToastContainer/>
             <CardContent>
                 <Grid>
                     <h2>Add Video</h2>
@@ -68,6 +90,12 @@ export default function AddVideo(){
                         <Grid item xs={12} sm={8}>
                         <TextField fullWidth type='link' label='Link' placeholder='https://youtube....' required value={link} 
                         onChange={(e)=>setLink(e.target.value)}/>
+                        </Grid>       
+                        <Grid item xs={12} sm={4}>
+                        <FormGroup>
+                        <FormControlLabel control={<Switch checked={checked} onChange={()=>setChecked(event.target.checked)} 
+                        color="primary"/>} label="Priority" labelPlacement="top" />
+                        </FormGroup>
                         </Grid>       
                         <Grid item xs={12}>
                         <Button type='submit' variant='contained' sx={{ marginRight: 3.5 }}>

@@ -7,12 +7,16 @@ import TextField from '@mui/material/TextField'
 import { useState } from 'react'
 import router from 'next/router'
 import Switch from '@mui/material/Switch';
+import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 import {parseCookies} from 'nookies'
+import jwt from 'jsonwebtoken'
+import { ToastContainer,toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function BlogId({blogId}){
     // react state to control modal visibility.
@@ -21,12 +25,15 @@ export default function BlogId({blogId}){
     const [content,setContent] = useState()
     const [tags,setTags] = useState()
     const [status,setStatus] = useState()
+    const [checked,setChecked] = useState("")
 
     // geting cookies info with nookies
-    const cookie = parseCookies()
-    const user = cookie.user ? JSON.parse(cookie.user) :""
+    // cookies with nookies for role//
+    const {token} = parseCookies()
+    const decode = jwt.decode(token,process.env.JWT_SECRET)
+    const role = decode?.role
 
-    // console.log(user)
+    // console.log(role)
 
     //Update Function//
     const handleSubmit = async(e)=>{
@@ -42,16 +49,35 @@ export default function BlogId({blogId}){
                 title,
                 content,
                 tags,
-                status
+                status,
+                priority:checked
             })
         })
         const res2 = await res.json()
         if(res2.error){
-            console.log("Error")
+            toast.error('Something went wrong!', {
+                position: "top-center",
+                autoClose: 1500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "colored",
+                });
         }
         else{
-            console.log("Success")
-            router.push(`/admin/blogs/${blogId._id}`)
+            toast.success('Blog Updated!', {
+                position: "top-center",
+                autoClose: 1500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "colored",
+            });
+            router.push(`/blogs/${blogId._id}`)
         }
     }
 
@@ -61,12 +87,13 @@ export default function BlogId({blogId}){
             method:"DELETE"
         })
         await res.json()
-        router.push('/admin/blogs')
+        router.push('/blogs')
     }
 
 
     return(
         <Card>
+            <ToastContainer/>
             {showModel ? (
                 <div style={myStyles.Popup}>
                     <img src='/images/logos/sure.png' width={"100px"} height="100px" alt='not found' />
@@ -94,8 +121,7 @@ export default function BlogId({blogId}){
                             // onChange={handleChange}
                             />
                         </Grid> */}
-                        {user.role == "member" ? ""
-                        :
+                        {role == "member" ? "":
                         <Grid item xs={12} sm={6}>
                                 <FormControl fullWidth>
                                     <InputLabel>Status</InputLabel>
@@ -105,9 +131,15 @@ export default function BlogId({blogId}){
                                     <MenuItem value='approved'>Approved</MenuItem>
                                     </Select>
                                 </FormControl>
-                            </Grid>
+                        </Grid>
                         }
-                        
+                        {role == "member" ? "":
+                        <Grid item xs={12} sm={6}>
+                            <FormGroup>
+                            <FormControlLabel control={<Switch defaultValue={blogId.priority} checked={checked} onChange={()=>setChecked(event.target.checked)} 
+                            color="primary"/>} label="Priority" labelPlacement="top" />
+                            </FormGroup>
+                        </Grid> }
                         <Grid item xs={12} sm={6}>
                         <TextField fullWidth label='Title' defaultValue={blogId.title}
                             onChange={(e)=>setTitle(e.target.value)}/>

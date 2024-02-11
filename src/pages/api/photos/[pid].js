@@ -10,6 +10,9 @@ export default async (req,res)=>{
         case "DELETE":
             await deletePhoto(req,res)
             break
+        case "PUT":
+            await updatePhoto(req,res)
+            break
     }
 
 }
@@ -27,4 +30,24 @@ const deletePhoto = async (req,res) =>{
     await Photo.findByIdAndDelete({_id:pid})
 
     res.status(200).json({})
+}
+
+const updatePhoto = async(req,res)=>{
+    const {pid} = req.query
+    const {link,status,priority} = req.body
+
+    try{
+        await Photo.findByIdAndUpdate({_id:pid},{
+            $set:{
+                mediaUrl:link,
+                status,
+                priority
+            }
+        })
+
+        return res.status(200).json({})
+    }catch(error){
+        return res.status(422).json("error")
+    }
+
 }

@@ -13,6 +13,14 @@ const VideoSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    type:{
+        type:String,
+        required:true
+    },
+    priority:{
+        type:Boolean,
+        required:true,
+    },
     status:{
         type:String,
         required:true,

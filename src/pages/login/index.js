@@ -1,5 +1,7 @@
 // ** React Imports
 import { useState } from 'react'
+import { ToastContainer,toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 // ** Next Imports
 import Link from 'next/link'
@@ -82,24 +84,36 @@ const LoginPage = () => {
     })
     const res2 = await res.json()
     if(res2.error){
-      console.log("error")
+      toast.error('Invalid Credentials!', {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "colored",
+        });
     }else{
-      const user = JSON.stringify(res2.user)
-      
-      // const hashRole = await bcrypt.hash(user.role,10)
+      toast.success('Login Success!', {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "colored",
+    });
 
       cookie.set('token',res2.token,{
-        expires:20,///change it after checking..
+        expires:10,///change it after checking..
         secure:true,
         sameSite:'strict'
       })
-      
-      // cookie.set('user',hashRole,{
-      //   expires:20,
-      //   secure:true,
-      //   sameSite:'strict'
-      // })
       router.push('/dashboard')
+      
+      // router.push({pathname:'/dashboard',query:{url:'ogin'}})
     }
 
   }
@@ -123,6 +137,7 @@ const LoginPage = () => {
 
   return (
     <Box className='content-center'>
+      <ToastContainer/>
       <Card sx={{ zIndex: 1 }}>
         <CardContent sx={{ padding: theme => `${theme.spacing(12, 9, 7)} !important` }}>
           <Box sx={{ mb: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -151,7 +166,7 @@ const LoginPage = () => {
               <InputLabel htmlFor='auth-login-password'>Password</InputLabel>
               <OutlinedInput
                 label='Password'
-                value={values.password}
+                value={`${values.password}`}
                 id='auth-login-password'
                 onChange={handleChange('password')}
                 type={values.showPassword ? 'text' : 'password'}
@@ -172,8 +187,8 @@ const LoginPage = () => {
             <Box sx={{ mb: 4, display: 'flex', alignItems: 'center', 
                 flexWrap: 'wrap', justifyContent: 'space-between', paddingTop:"20px",paddingBottom:"10px"}}>
               {/* <FormControlLabel control={<Checkbox />} label='Remember Me' /> */}
-              <Link passHref href='/'>
-                <LinkStyled onClick={e => e.preventDefault()}>Forgot Password?</LinkStyled>
+              <Link passHref href='/reset-password'>
+                <LinkStyled>Forgot Password?</LinkStyled>
               </Link>
             </Box>
             <Button

@@ -4,6 +4,8 @@ import { useState, Fragment } from 'react'
 // ** Next Import
 import { useRouter } from 'next/router'
 import cookie from 'js-cookie'
+import { parseCookies } from 'nookies'
+import jwt from 'jsonwebtoken'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -40,9 +42,10 @@ const UserDropdown = () => {
   // ** Hooks
   const router = useRouter()
 
-  //cookies with nookies
-  const data = cookie.get('user')
-  const user = data ? JSON.parse(data) : ""
+  // cookies with nookies for role//
+  const {token} = parseCookies()
+  const decode = jwt.decode(token,process.env.JWT_SECRET)
+
 
   const handleDropdownOpen = event => {
     setAnchorEl(event.currentTarget)
@@ -103,9 +106,9 @@ const UserDropdown = () => {
               <Avatar alt='John Doe' src='/images/avatars/1.png' sx={{ width: '2.5rem', height: '2.5rem' }} />
             </Badge>
             <Box sx={{ display: 'flex', marginLeft: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
-              <Typography sx={{ fontWeight: 600 }}>{user.name}</Typography>
+              <Typography sx={{ fontWeight: 600 }}>{decode?.name}</Typography>
               <Typography variant='body2' sx={{ fontSize: '0.8rem', color: 'text.disabled' }}>
-                {user.role}
+                {decode?.role}
               </Typography>
             </Box>
           </Box>

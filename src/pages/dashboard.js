@@ -1,8 +1,7 @@
+// 'use client'
+
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
-import {parseCookies} from 'nookies'
-import jwt from 'jsonwebtoken'
-import { getServerSideProps } from 'src/serverprops'
 
 // ** Icons Imports
 import Poll from 'mdi-material-ui/Poll'
@@ -24,8 +23,33 @@ import StatisticsCard from 'src/views/dashboard/StatisticsCard'
 import WeeklyOverview from 'src/views/dashboard/WeeklyOverview'
 import DepositWithdraw from 'src/views/dashboard/DepositWithdraw'
 import SalesByCountries from 'src/views/dashboard/SalesByCountries'
+import {useRouter} from 'next/router'
+import { useEffect, useState } from 'react'
 
 const Dashboard = () => {
+  const router = useRouter()
+  const [reload,setReload] = useState(true)
+
+  // const searchParams = useSearchParams()
+  // const search = searchParams.get('url')
+
+  console.log(router.asPath,"sa")
+  
+  const reloadPage= () =>{
+    if(reload){
+      router.replace(router.asPath)
+      console.log("bnaba")
+      setReload(false)
+    }
+  }
+
+  // useEffect(()=>{
+  //   return()=>{
+  //     reloadPage()
+      
+  //   }
+  // },[reloadPage])
+
   return (
     <ApexChartWrapper>
       <Grid container spacing={6}>
@@ -101,7 +125,14 @@ const Dashboard = () => {
   )
 }
 
-// export {getServerSideProps}
+
 
 export default Dashboard
 
+// export async function getServerSideProps(context) {
+//   const lastUrl = context.req.headers.referer
+
+//   return{
+//     props:{data:lastUrl}
+//   }
+// }

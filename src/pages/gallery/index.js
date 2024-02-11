@@ -10,7 +10,7 @@ import Link from 'next/link'
 
 
 export default function Gallery({photos}){
-  // console.log(photos)
+
 
   return(
     <Card>
@@ -26,11 +26,13 @@ export default function Gallery({photos}){
                 </Grid>
             </Grid>
             <Grid item xs={12}>
-              <ImageList cols={4} >
+              <ImageList cols={3}>
                 {photos.map((item) => (
                   <Link href={'/gallery/[id]'} as={`/gallery/${item._id}`} >
                     <a>
                     <ImageListItem key={item.id} style={{cursor:"pointer"}}>
+                    {item.status == "pending" ?(<div style={myStyles.status}>{item.status}</div>):
+                  (<div style={myStyles.status1}>{item.status}</div>)}
                     <img
                         srcSet={`${item.mediaUrl}?w=200&h=200&fit=crop&auto=format&dpr=2 2x`}
                         src={`${item.mediaUrl}?w=200&h=200&fit=crop&auto=format`}
@@ -50,32 +52,7 @@ export default function Gallery({photos}){
             
         </Grid>
     </CardContent> 
-  </Card>
-
-      // <div>
-      //     <div style={{display:"flex",alignItems:"center"}}>
-      //         <h1>Gallery</h1>
-      //         <div style={{display:"flex",right:"1"}}>
-      //             <button>
-      //                 Create
-      //             </button>
-      //         </div>
-      //     </div>
-      //     <ImageList  cols={3} >
-      //         {itemData.map((item) => (
-      //             <ImageListItem key={item.img}>
-      //             <img
-      //                 srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-      //                 src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-      //                 alt={item.title}
-      //                 loading="lazy"
-      //             />
-      //                 <Trash style={{position:"absolute",right:"1",color:"white",width:"30px",height:"30px"}}/>
-      //             </ImageListItem>
-      //         ))}
-      //     </ImageList>
-      // </div>
-      
+  </Card>      
   )
 }
 
@@ -88,4 +65,21 @@ export async function getStaticProps(){
       photos:data
     }
   }
+}
+
+const myStyles={
+  status:{
+    position:"absolute",
+    background:"#8B0000",
+    borderRadius:"5px",
+    padding:"5px",
+    color:"white"
+  },
+  status1:{
+    position:"absolute",
+    background:"green",
+    borderRadius:"5px",
+    padding:"5px",
+    color:"white"
+  },
 }

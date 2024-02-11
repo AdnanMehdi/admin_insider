@@ -5,12 +5,18 @@ import Grid from '@mui/material/Grid'
 import { useState } from 'react'
 import { writeFile } from "fs/promises";
 import {join} from 'path'
+import { ToastContainer,toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import Switch from '@mui/material/Switch';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 
 export default function AddPhoto(){
 
     const [media, setMedia] = useState()
     const [selectFiles, setSelectFile] = useState([])
+    const [checked,setChecked] = useState("")
     const ImagePush = []
 
     const handleClick = async(e) =>{
@@ -26,14 +32,34 @@ export default function AddPhoto(){
                     'Content-Type':'application/json'
                 },
                 body:JSON.stringify({
-                    mediaUrl:ImagePush[i]
+                    mediaUrl:ImagePush[i],
+                    priority:checked,
+                    type:"Images"
                 })            
             })
             const res2 = await res.json()
             if(res2.error){
-                console.log("eror")
+                toast.error('Something went wrong!', {
+                    position: "top-center",
+                    autoClose: 1500,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: false,
+                    progress: undefined,
+                    theme: "colored",
+                    });
             }else{
-                console.log("Good")
+                toast.success('Image Uploaded!', {
+                    position: "top-center",
+                    autoClose: 1500,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: false,
+                    progress: undefined,
+                    theme: "colored",
+                });
                 setSelectFile("")
             }
         }       
@@ -92,9 +118,16 @@ export default function AddPhoto(){
 
     return(
         <Card>
+            <ToastContainer/>
             <CardContent>
                 <Grid>
                     <h2>Add Photo</h2>
+                </Grid>
+                <Grid>
+                <FormGroup>
+                <FormControlLabel control={<Switch checked={checked} onChange={()=>setChecked(event.target.checked)} 
+                color="primary"/>} label="Priority" labelPlacement="top" />
+                </FormGroup>
                 </Grid>
                 <Grid style={{display:"flex",justifyContent:"center"}}>
                     <label>

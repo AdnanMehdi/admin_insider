@@ -1,5 +1,7 @@
 // ** React Imports
 import { useState } from 'react'
+import { ToastContainer,toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -20,6 +22,7 @@ import Button from '@mui/material/Button'
 // ** Icons Imports
 import Close from 'mdi-material-ui/Close'
 import { parseCookies } from 'nookies'
+import router from 'next/router'
 
 
 
@@ -50,13 +53,41 @@ export default function Questions({members}) {
             })
             const res2 = await res.json()
             if(res2.error){
-                console.log("error")
+                toast.error('Account already exist', {
+                    position: "top-center",
+                    autoClose: 1500,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: false,
+                    progress: undefined,
+                    theme: "colored",
+                    });
             }else{
-                console.log("good")
+                toast.success(' Member Added!', {
+                    position: "top-center",
+                    autoClose: 1500,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: false,
+                    progress: undefined,
+                    theme: "colored",
+                });
+                router.push('/members')
             }
         }
         else{
-            alert("wrong pass..")
+            toast.error('Password does not match', {
+                position: "top-center",
+                autoClose: 1500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "colored",
+                });
         }
     
     }
@@ -65,6 +96,7 @@ export default function Questions({members}) {
     return (
         <Card>
             <CardContent>
+            <ToastContainer/>
                 <h1>Add New Members</h1>
                 <form onSubmit={(e)=>handleSubmit(e)}>
                 <Grid container spacing={7}>        

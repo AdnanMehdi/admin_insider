@@ -7,16 +7,22 @@ import TextField from '@mui/material/TextField'
 import { useState } from 'react'
 import router from 'next/router'
 import Switch from '@mui/material/Switch';
+import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 import {parseCookies} from 'nookies'
+import { ToastContainer,toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function PhotoId({photoId}){
     // react state to control modal visibility.
     const [showModel,setShowModel] = useState(false)
+    const [link,setLink] = useState()
+    const [status,setStatus] = useState()
+    const [checked,setChecked] = useState("")
 
     // geting cookies info with nookies
     const cookie = parseCookies()
@@ -28,27 +34,43 @@ export default function PhotoId({photoId}){
     const handleSubmit = async(e)=>{
         e.preventDefault()
 
-    //     const res = await fetch(`http://localhost:3000/api/photos/${photoId._id}`,{
-    //         method:"PUT",
-    //         headers:{
-    //             'Content-Type':'application/json'
-    //         },
-    //         body:JSON.stringify({
-    //             // pid:videoId._id,
-    //             title,
-    //             content,
-    //             tags,
-    //             status
-    //         })
-    //     })
-    //     const res2 = await res.json()
-    //     if(res2.error){
-    //         console.log("Error")
-    //     }
-    //     else{
-    //         console.log("Success")
-    //         router.push(`/admin/blogs/${photoId._id}`)
-    //     }
+        const res = await fetch(`http://localhost:3000/api/photos/${photoId._id}`,{
+            method:"PUT",
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify({
+                link,
+                status,
+                priority:checked
+            })
+        })
+        const res2 = await res.json()
+        if(res2.error){
+            toast.error('Something went wrong!', {
+                position: "top-center",
+                autoClose: 1500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "colored",
+                });
+        }
+        else{
+            toast.success('Video Updated!', {
+                position: "top-center",
+                autoClose: 1500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "colored",
+            });
+            router.push(`/gallery/${photoId._id}`)
+        }
     }
 
     //delete funciton api call
@@ -59,9 +81,8 @@ export default function PhotoId({photoId}){
         await res.json()
 
         //delete image function//
-        deleteImage()
-
-        router.push('/admin/gallery')
+        // deleteImage()
+        router.push('/gallery')
     }
 
     const deleteImage = async()=>{
@@ -87,6 +108,7 @@ export default function PhotoId({photoId}){
 
     return(
         <Card>
+            <ToastContainer/>
             {showModel ? (
                 <div style={myStyles.Popup}>
                     <img src='/images/logos/sure.png' width={"100px"} height="100px" alt='not found' />
@@ -126,11 +148,19 @@ export default function PhotoId({photoId}){
                                 </FormControl>
                             </Grid>
                         }
+                        {user.role == "member" ? "":
+                        <Grid item xs={12} sm={6}>
+                            <FormGroup>
+                            <FormControlLabel control={<Switch  checked={checked} onChange={()=>setChecked(event.target.checked)} 
+                            color="primary"/>} label="Priority" labelPlacement="top" />
+                            </FormGroup>
+                        </Grid> }
                         
-                        <Grid item xs={12} sm={6}>
-                        <TextField fullWidth label='Link' defaultValue={photoId.mediaUrl}/>
+                        <Grid item xs={12} sm={12}>
+                        <TextField fullWidth label='Link' defaultValue={photoId.mediaUrl}
+                        onChange={(e)=>setLink(e.target.value)}/>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={12}>
                         <Button type='submit' variant='contained' sx={{ marginRight: 3.5 }}>
                             Update
                         </Button>

@@ -12,9 +12,6 @@ export default async (req,res) =>{
         case "POST":
             await LoginUser(req,res)
             break
-        case "GET":
-            await VerifyUser(req,res)
-            break
     }
 
 }
@@ -27,23 +24,15 @@ const LoginUser = async(req,res)=>{
             return res.status(422).json({error:"Empty fields"})
         }
         const admin = await Admin.findOne({email})
-        const userData = {}
+
         if(admin){
             const passMatch = await bcrypt.compare(password,admin.password)
             if(passMatch){
-                const token = jwt.sign({userId:admin._id,name:admin.name,role:admin.role},process.env.JWT_SECRET,{
+                const token = jwt.sign({userId:admin._id,email:admin.email,name:admin.name,role:admin.role},process.env.JWT_SECRET,{
                     expiresIn:"10h"
                 })
 
-                const {name,role} = admin
-
-                // res.cookie('jwt',token,{
-                //     expiresIn:1,
-                //     secure: process.env.NODE_ENV !== "development",
-                //     httpOnly: true,
-                // })
-
-                res.status(201).json({token,user:{name,role}})
+                res.status(201).json({token})
             }else{
                 return res.status(401).json({error:"Email or Password doesn't match!"})
             }
@@ -55,14 +44,14 @@ const LoginUser = async(req,res)=>{
     }
 }
 
-const VerifyUser = async(req,res)=>{
-    const {token} = parseCookies()
+// const VerifyUser = async(req,res)=>{
+//     const {token} = parseCookies()
     
-    const verifyToken = jwt.verify(token,process.env.JWT_SECRET)
+//     const verifyToken = jwt.verify(token,process.env.JWT_SECRET)
 
-    if(!verifyToken){
-        res.status(401).json({error:"Unauthenticated"})
-    }else{
-        res.status(200).json({verifyToken})
-    }
-}
+//     if(!verifyToken){
+//         res.status(401).json({error:"Unauthenticated"})
+//     }else{
+//         res.status(200).json({verifyToken})
+//     }
+// }

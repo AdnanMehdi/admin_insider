@@ -33,12 +33,12 @@ const deleteBlog = async (req,res) =>{
 
 const updateBlog = async (req,res) =>{
     const {pid} = req.query
-    const {title,tags,content,status} = req.body
+    const {title,tags,content,status,priority} = req.body
 
     try{
         const blogs = await Blog.findByIdAndUpdate({_id:pid},{
             $set:{
-                title,tags,content,status
+                title,tags,content,status,priority
             }
         })
         res.status(200).json(blogs)

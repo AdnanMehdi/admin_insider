@@ -32,15 +32,17 @@ const addAdmins = async(req,res)=>{
     const user = await Admin.findOne({email})
     if(user){
         res.status(422).json({error:"already exist with this email."})
+    }else{
+        const hashedPass = await bcrypt.hash(password,12)
+
+        const admin = await new Admin({
+            name,
+            email,
+            password:hashedPass,
+            role
+        }).save()
+        res.status(201).json(admin)
     }
 
-    const hashedPass = await bcrypt.hash(password,12)
-
-    const admin = await new Admin({
-        name,
-        email,
-        password:hashedPass,
-        role
-    }).save()
-    res.status(201).json(admin)
+    
 }

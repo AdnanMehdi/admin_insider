@@ -13,23 +13,22 @@ import Questions from 'mdi-material-ui/CommentQuestionOutline'
 import GoogleCirclesExtended from 'mdi-material-ui/GoogleCirclesExtended'
 import { parseCookies } from 'nookies'
 import jwt from 'jsonwebtoken'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+
+// getting token and decoding it
+const {token} = parseCookies()
+const verifyUser = jwt.decode(token,process.env.JWT_SECRET)
+const role = verifyUser?.role
 
 
-// const {token} = parseCookies()
-// const verifyUser = jwt.decode(token)
-// const role = verifyUser?.role
+const Navigation = () => {
 
-// var condition = role == "member" ? {
-//   title: 'Add Member',
-//   icon: AccountPlusOutline,
-//   path: '/members',
-// }: ""
+  const [stateArray,setStateArray] = useState()
+  const router = useRouter()
 
-// console.log(token,"asd")
-
-const navigation = () => {
-
-  return [
+  //two different array for roles...
+  const rootArray = [
     {
       title: 'Dashboard',
       icon: HomeOutline,
@@ -43,15 +42,7 @@ const navigation = () => {
     {
       sectionTitle: 'Pages'
     },
-
-    //auth/..
-    // condition,
-    // {role  "root" ? 
-    // {
-    //   title: 'Add Member',
-    //   icon: AccountPlusOutline,
-    //   path: '/members',
-    // } : ""},
+  
     {
       title: 'Add Member',
       icon: AccountPlusOutline,
@@ -81,44 +72,143 @@ const navigation = () => {
       icon: Questions,
       path: '/questions',
       
+    }]
+  
+    const memberArray = [{
+      title: 'Dashboard',
+      icon: HomeOutline,
+      path: '/dashboard'
     },
-    
-    // {
-    //   title: 'LogOut',
-    //   icon: Questions,
-    //   path: '/questions',
+    {
+      title: 'Account Settings',
+      icon: AccountCogOutline,
+      path: '/account-settings'
+    },{
+      sectionTitle: 'Pages'
+    },      
+    {
+      title: 'Blogs',
+      icon: Blogs,
+      path: '/blogs',
       
-    // },
+    },
+    {
+      title: 'Gallery',
+      icon: Gallery,
+      path: '/gallery',
+      
+    },
+    {
+      title: 'Videos',
+      icon: Videos,
+      path: '/videos',
+  
+    },
+    {
+      title: 'Questions',
+      icon: Questions,
+      path: '/questions',
+      
+    }]
+  
+
+  var Condition = role == "member" ? memberArray : rootArray
+
+  // useEffect(()=>{
+  //   return()=>{
+
+  //   }
+  // },[Condition])
+
+
+  // const Condition = role == "member" ? memberArray : rootArray
+
+  return(
+    Condition
+  )
+
+  // return [
+  //   {
+  //     title: 'Dashboard',
+  //     icon: HomeOutline,
+  //     path: '/dashboard'
+  //   },
+  //   {
+  //     title: 'Account Settings',
+  //     icon: AccountCogOutline,
+  //     path: '/account-settings'
+  //   },
+  //   {
+  //     sectionTitle: 'Pages'
+  //   },
+
+  //   {
+  //     title: 'Add Member',
+  //     icon: AccountPlusOutline,
+  //     path: '/members',
+  //   },
+        
+  //   {
+  //     title: 'Blogs',
+  //     icon: Blogs,
+  //     path: '/blogs',
+      
+  //   },
+  //   {
+  //     title: 'Gallery',
+  //     icon: Gallery,
+  //     path: '/gallery',
+      
+  //   },
+  //   {
+  //     title: 'Videos',
+  //     icon: Videos,
+  //     path: '/videos',
+  
+  //   },
+  //   {
+  //     title: 'Questions',
+  //     icon: Questions,
+  //     path: '/questions',
+      
+  //   },
     
-    // {
-    //   sectionTitle: 'User Interface'
-    // },
-    // {
-    //   title: 'Typography',
-    //   icon: FormatLetterCase,
-    //   path: '/typography'
-    // },
-    // {
-    //   title: 'Icons',
-    //   path: '/icons',
-    //   icon: GoogleCirclesExtended
-    // },
-    // {
-    //   title: 'Cards',
-    //   icon: CreditCardOutline,
-    //   path: '/cards'
-    // },
-    // {
-    //   title: 'Tables',
-    //   icon: Table,
-    //   path: '/tables'
-    // },
-    // {
-    //   icon: CubeOutline,
-    //   title: 'Form Layouts',
-    //   path: '/form-layouts'
-    // }
-  ]
+  //   // {
+  //   //   title: 'LogOut',
+  //   //   icon: Questions,
+  //   //   path: '/questions',
+      
+  //   // },
+    
+  //   // {
+  //   //   sectionTitle: 'User Interface'
+  //   // },
+  //   // {
+  //   //   title: 'Typography',
+  //   //   icon: FormatLetterCase,
+  //   //   path: '/typography'
+  //   // },
+  //   // {
+  //   //   title: 'Icons',
+  //   //   path: '/icons',
+  //   //   icon: GoogleCirclesExtended
+  //   // },
+  //   // {
+  //   //   title: 'Cards',
+  //   //   icon: CreditCardOutline,
+  //   //   path: '/cards'
+  //   // },
+  //   // {
+  //   //   title: 'Tables',
+  //   //   icon: Table,
+  //   //   path: '/tables'
+  //   // },
+  //   // {
+  //   //   icon: CubeOutline,
+  //   //   title: 'Form Layouts',
+  //   //   path: '/form-layouts'
+  //   // }
+  // ]
 }
 
-export default navigation
+export default Navigation

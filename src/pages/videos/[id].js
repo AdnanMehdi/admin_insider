@@ -4,15 +4,19 @@ import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
 import ReactPlayer from 'react-player'
 import TextField from '@mui/material/TextField'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import router from 'next/router'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 import Switch from '@mui/material/Switch';
+import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import {parseCookies} from 'nookies'
+import jwt from 'jsonwebtoken'
+import { ToastContainer,toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -23,11 +27,12 @@ export default function VideoId({videoId}){
     const [link,setLink] = useState()
     const [tags,setTags] = useState()
     const [status,setStatus] = useState()
+    const [checked,setChecked] = useState("")
 
     // cookies with nookies for role//
-    const cookie = parseCookies()
-    const mycookie = JSON.stringify(cookie)
-    const role = mycookie ? JSON.parse(mycookie) :""
+    const {token} = parseCookies()
+    const decode = jwt.decode(token,process.env.JWT_SECRET)
+    const role = decode?.role
 
     //Update Function//
     const handleSubmit = async(e) =>{
@@ -43,16 +48,35 @@ export default function VideoId({videoId}){
                 title,
                 link,
                 tags,
-                status
+                status,
+                priority:checked
             })
         })
         const res2 = await res.json()
         if(res2.error){
-            console.log("Error")
+            toast.error('Something went wrong!', {
+                position: "top-center",
+                autoClose: 1500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "colored",
+                });
         }
         else{
-            console.log("Success")
-            router.push(`/admin/videos/${videoId._id}`)
+            toast.success('Video Updated!', {
+                position: "top-center",
+                autoClose: 1500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "colored",
+            });
+            router.push(`/videos/${videoId._id}`)
         }
     }
 
@@ -62,11 +86,12 @@ export default function VideoId({videoId}){
             method:"DELETE"
         })
         await res.json()
-        router.push('/admin/videos')
+        router.push('/videos')
     }
 
     return(
         <Card>
+            <ToastContainer/>
             {showModel ? (
                 <div style={myStyles.Popup}>
                     <img src='/images/logos/sure.png' width={"100px"} height="100px" alt='not found' />
@@ -83,18 +108,7 @@ export default function VideoId({videoId}){
                 </div>
                 <form style={{padding:"20px"}} onSubmit={(e)=>handleSubmit(e)}>
                     <Grid container spacing={7}>
-                        {/* <Grid item xs={12} sm={6}>
-                            <FormControlLabel
-                                value="start"
-                                control={<Switch color="primary" />}
-                                label="Update"
-                                labelPlacement="start"
-                                
-                                // checked={checked}
-                                // onChange={handleChange}
-                                />
-                        </Grid> */}
-                        {role.user == "member" ? "" :
+                        {role == "member" ? "" :
                         <Grid item xs={12} sm={6}>
                             <FormControl fullWidth>
                                 <InputLabel>Status</InputLabel>
@@ -104,7 +118,15 @@ export default function VideoId({videoId}){
                                 <MenuItem value='approved'>Approved</MenuItem>
                                 </Select>
                             </FormControl>
-                        </Grid>}      
+                        </Grid>}
+                        {role == "member" ? "":
+                        <Grid item xs={12} sm={6}>
+                            <FormGroup>
+                            <FormControlLabel control={<Switch  checked={checked} onChange={()=>setChecked(event.target.checked)} 
+                            color="primary"/>} label="Priority" labelPlacement="top" />
+                            </FormGroup>
+                        </Grid> 
+                        }    
                         <Grid item xs={12} sm={6}>
                         <TextField fullWidth label='Title' defaultValue={videoId.title} 
                             onChange={(e)=>setTitle(e.target.value)}/>

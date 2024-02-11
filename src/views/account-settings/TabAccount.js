@@ -1,5 +1,7 @@
 // ** React Imports
 import { useState } from 'react'
+import { ToastContainer,toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -17,6 +19,7 @@ import IconButton from '@mui/material/IconButton'
 import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
 import Button from '@mui/material/Button'
+
 
 // ** Icons Imports
 import Close from 'mdi-material-ui/Close'
@@ -45,10 +48,13 @@ const ResetButtonStyled = styled(Button)(({ theme }) => ({
   }
 }))
 
-const TabAccount = () => {
+
+
+const TabAccount = ({info}) => {
   // ** State
   const [openAlert, setOpenAlert] = useState(true)
-  const [imgSrc, setImgSrc] = useState('/images/avatars/1.png')
+  const [email,setEmail] = useState()
+  const [password,setPass] = useState()
 
   const onChange = file => {
     const reader = new FileReader()
@@ -59,99 +65,91 @@ const TabAccount = () => {
     }
   }
 
+  const handleSubmit = async(e)=>{
+    e.preventDefault()
+    
+    const res = await fetch(`http://localhost:3000/api/admins/${info?.userId}`,{
+      method:"PUT",
+      headers:{
+          'Content-Type':'application/json'
+      },
+      body:JSON.stringify({
+          email,
+          password
+      })
+    })
+    const res2 = await res.json()
+    if(res2.error){
+      toast.error('Wrong Password!', {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "colored",
+        });
+    }else{
+      toast.success('Email Updated!', {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "colored",
+    });
+      
+    }
+    
+
+  }
+
   return (
     <CardContent>
-      <form>
+      <ToastContainer/>
+      <form onSubmit={(e)=>handleSubmit(e)}>
         <Grid container spacing={7}>
-          {/* <Grid item xs={12} sx={{ marginTop: 4.8, marginBottom: 3 }}> */}
-            {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <ImgStyled src={imgSrc} alt='Profile Pic' />
-              <Box>
-                <ButtonStyled component='label' variant='contained' htmlFor='account-settings-upload-image'>
-                  Upload New Photo
-                  <input
-                    hidden
-                    type='file'
-                    onChange={onChange}
-                    accept='image/png, image/jpeg'
-                    id='account-settings-upload-image'
-                  />
-                </ButtonStyled>
-                <ResetButtonStyled color='error' variant='outlined' onClick={() => setImgSrc('/images/avatars/1.png')}>
-                  Reset
-                </ResetButtonStyled>
-                <Typography variant='body2' sx={{ marginTop: 5 }}>
-                  Allowed PNG or JPEG. Max size of 800K.
-                </Typography>
-              </Box>
-            </Box> */}
-          {/* </Grid> */}
-
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Username' placeholder='johnDoe' defaultValue='johnDoe' />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Name' placeholder='John Doe' defaultValue='John Doe' />
+            <TextField fullWidth label='Name' defaultValue={`${info?.name}`} />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
               type='email'
               label='Email'
-              placeholder='johnDoe@example.com'
-              defaultValue='johnDoe@example.com'
+              defaultValue={`${info?.email}`}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Role</InputLabel>
-              <Select label='Role' defaultValue='admin'>
-                <MenuItem value='admin'>Admin</MenuItem>
-                <MenuItem value='author'>Author</MenuItem>
-                <MenuItem value='editor'>Editor</MenuItem>
-              </Select>
-            </FormControl>
+          <TextField fullWidth label='Role' defaultValue={`${info?.role}`} />
           </Grid>
-          {/* <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Status</InputLabel>
-              <Select label='Status' defaultValue='active'>
-                <MenuItem value='active'>Active</MenuItem>
-                <MenuItem value='inactive'>Inactive</MenuItem>
-                <MenuItem value='pending'>Pending</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid> */}
-          {/* <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Company' placeholder='ABC Pvt. Ltd.' defaultValue='ABC Pvt. Ltd.' />
-          </Grid> */}
-
-          {openAlert ? (
-            <Grid item xs={12} sx={{ mb: 3 }}>
-              <Alert
-                severity='warning'
-                sx={{ '& a': { fontWeight: 400 } }}
-                action={
-                  <IconButton size='small' color='inherit' aria-label='close' onClick={() => setOpenAlert(false)}>
-                    <Close fontSize='inherit' />
-                  </IconButton>
-                }
-              >
-                <AlertTitle>Your email is not confirmed. Please check your inbox.</AlertTitle>
-                <Link href='/' onClick={e => e.preventDefault()}>
-                  Resend Confirmation
-                </Link>
-              </Alert>
-            </Grid>
-          ) : null}
+          <Grid item xs={12}>
+            <h2>Change Your Email:</h2>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              type='email'
+              label='Email'
+              defaultValue={`${info?.email}`}
+              onChange={(e)=>{setEmail(e.target.value)}}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6.01}>
+            <TextField fullWidth label='Password' type='password' onChange={(e)=>{setPass(e.target.value)}}/>
+          </Grid>
+          
 
           <Grid item xs={12}>
-            <Button variant='contained' sx={{ marginRight: 3.5 }}>
-              Save Changes
+            <Button type='submit' variant='contained' sx={{ marginRight: 3.5 }}>
+              Submit
             </Button>
-            <Button type='reset' variant='outlined' color='secondary'>
+            {/* <Button type='reset' variant='outlined' color='secondary'>
               Reset
-            </Button>
+            </Button> */}
           </Grid>
         </Grid>
       </form>
