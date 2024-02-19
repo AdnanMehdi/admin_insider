@@ -111,11 +111,12 @@ const LoginPage = () => {
         secure:true,
         sameSite:'strict'
       })
-      router.push('/dashboard')
+
+      // router.push('/dashboard')
       
       // localStorage.setItem('url','login')
       
-      // router.push({pathname:'/dashboard',query:{url:'ogin'}})
+      router.push({pathname:'/dashboard',query:{url:'login'}})
     }
 
   }

@@ -27,14 +27,17 @@ import {useRouter} from 'next/router'
 import { useEffect, useState } from 'react'
 
 const Dashboard = () => {
-  // const history = useHistory();
-  const [reload,setReload] = useState(true)
+  const router = useRouter();
+  const url = router.query
 
   // const searchParams = useSearchParams()
   // const search = searchParams.get('url')
   // let path = localStorage.getItem('url')
 
-  // console.log(path,"sa")
+  // console.log(url.url,"sa")
+  // if(url.url == "login"){
+  //   router.reload()
+  // }
   
   // const reloadPage= () =>{
   //   if(reload){
@@ -45,6 +48,9 @@ const Dashboard = () => {
   // }
 
   useEffect(()=>{
+    if(url.url == "login"){
+      router.reload()
+    }
     
   },[])
 
