@@ -27,7 +27,9 @@ export default function VideoId({videoId}){
     const [link,setLink] = useState()
     const [tags,setTags] = useState()
     const [status,setStatus] = useState()
-    const [checked,setChecked] = useState("")
+    const [checked,setChecked] = useState(videoId.priority)
+
+    // console.log(checked,'sa')
 
     // cookies with nookies for role//
     const {token} = parseCookies()
@@ -48,8 +50,8 @@ export default function VideoId({videoId}){
                 title,
                 link,
                 tags,
-                status,
-                priority:checked
+                status:role == "member" ? "pending" : status ,
+                priority:role == "member" ? false : checked
             })
         })
         const res2 = await res.json()
@@ -144,7 +146,7 @@ export default function VideoId({videoId}){
                         <Button type='submit' variant='contained' sx={{ marginRight: 3.5 }}>
                             Update
                         </Button>
-                        <Button type='delete' variant='outlined' color='error' onClick={()=>{setShowModel(true)}} >
+                        <Button variant='outlined' color='error' onClick={()=>{setShowModel(true)}} >
                             Delete
                         </Button>
                         </Grid>
@@ -182,6 +184,7 @@ const myStyles={
     Popup:{
         width:"400px",
         background:"white",
+        zIndex:"10",
         display:"flex",
         alignItems:"center",
         flexDirection:"column",

@@ -9,6 +9,7 @@ import FormControl from '@mui/material/FormControl'
 import router from 'next/router'
 import React, { useState } from "react";
 import Modal from "react-overlays/Modal";
+import baseUrl from '../../../helpers/baseUrl'
 
 export default function Blogs({blog}){
     
@@ -32,7 +33,7 @@ export default function Blogs({blog}){
 }
 
 export async function getStaticProps(){
-    const res = await fetch(`http://localhost:3000/api/blog`)
+    const res = await fetch(`${baseUrl}/api/blog`)
     const data = await res.json()
 
     return{

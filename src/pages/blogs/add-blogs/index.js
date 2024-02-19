@@ -21,13 +21,13 @@ export default function AddBlogs(){
     const [tags,setTags] = useState("")
     const [banner,setBanner] = useState()
     const [content,setContent] = useState("")
-    const [checked,setChecked] = useState("")
+    const [checked,setChecked] = useState(false)
     let imageUrl = {}
 
     const handleSubmit= async (e)=> {
         e.preventDefault()
 
-        console.log(banner)
+        // if(banner){}
         await UploadBanner()
         
         const res = await fetch(`http://localhost:3000/api/blog`,{
@@ -110,7 +110,7 @@ export default function AddBlogs(){
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <label style={{fontWeight:"bold"}}> Banner Image : </label>
-                            <input type='file' accept='image/*' onChange={(e)=>{setBanner(e.target.files)}}/>
+                            <input required type='file' accept='image/*' onChange={(e)=>{setBanner(e.target.files)}}/>
                         {/* <TextField required fullWidth type='url' label='Banner Image Url' 
                         value={banner} onChange={(e)=>{setBanner(e.target.value)}}/> */}
                         </Grid>

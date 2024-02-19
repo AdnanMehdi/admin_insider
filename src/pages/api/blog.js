@@ -23,7 +23,7 @@ const getAllBlogs = async (req, res) =>{
 }
 
 const AddBlogs = async (req,res)=>{
-    const {title,tags,banner,content} = req.body
+    const {title,tags,banner,content,priority,type} = req.body
 
     if(!title || !tags || !banner || !content ){
         res.status(422).json({error:"Empty Fields"})
@@ -33,7 +33,9 @@ const AddBlogs = async (req,res)=>{
         title,
         tags,
         banner,
-        content
+        content,
+        priority,
+        type
     }).save()
     res.status(201).json(blog)
 

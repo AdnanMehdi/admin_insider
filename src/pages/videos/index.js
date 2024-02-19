@@ -45,7 +45,7 @@ export default function Videos({video}){
                                 <div key={item.id} style={myStyles.videoCard}>
                                     {item.status == "pending" ?(<div style={myStyles.status}>{item.status}</div>):
                                     (<div style={myStyles.status1}>{item.status}</div>)}
-                                    <div style={myStyles.play}><img src='/images/play-button.png' width={"50px"} alt='not found' /></div>
+                                    {/* <div style={myStyles.play}><img src='/images/play-button.png' width={"50px"} alt='not found' /></div> */}
                                     <Link href={'videos/[id]'} as={`videos/${item._id}`}>
                                         <a style={{textDecoration:"none",textAlign:"center",color:"black"}}>
                                         {/* <ReactPlayer url={item.link} controls width={"300px"} height={"200px"}/> */}

@@ -113,10 +113,11 @@ const TabAccount = ({info}) => {
       <form onSubmit={(e)=>handleSubmit(e)}>
         <Grid container spacing={7}>
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Name' defaultValue={`${info?.name}`} />
+            <TextField disabled fullWidth label='Name' defaultValue={`${info?.name}`} />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
+              disabled
               fullWidth
               type='email'
               label='Email'
@@ -124,7 +125,7 @@ const TabAccount = ({info}) => {
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-          <TextField fullWidth label='Role' defaultValue={`${info?.role}`} />
+          <TextField disabled fullWidth label='Role' defaultValue={`${info?.role}`} />
           </Grid>
           <Grid item xs={12}>
             <h2>Change Your Email:</h2>

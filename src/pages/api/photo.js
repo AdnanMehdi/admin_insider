@@ -22,14 +22,17 @@ const AllPhotos = async(req,res)=>{
 }
 
 const AddPhotos = async(req,res) =>{
-    const {mediaUrl} = req.body
+    const {mediaUrl,priority,type,tags} = req.body
 
-    if(!mediaUrl){
+    if(!mediaUrl || !tags){
         res.status(422).json({error:"no Url"})
     }
 
     const photos = await new Photo({
         mediaUrl,
+        priority,
+        type,
+        tags
     }).save()
     res.status(201).json(photos)
 

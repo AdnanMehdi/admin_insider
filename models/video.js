@@ -20,6 +20,7 @@ const VideoSchema = new mongoose.Schema({
     priority:{
         type:Boolean,
         required:true,
+        default:false
     },
     status:{
         type:String,

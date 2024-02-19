@@ -5,6 +5,10 @@ const PhotoSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    tags:{
+        type:String,
+        required:true
+    },
     type:{
         type:String,
         required:true
@@ -12,6 +16,7 @@ const PhotoSchema = new mongoose.Schema({
     priority:{
         type:Boolean,
         required:true,
+        default:false
     },
     status:{
         type:String,

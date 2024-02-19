@@ -25,7 +25,7 @@ const GetVideos = async(req,res) =>{
 const AddVideo = async (req,res) =>{
     const {title,link,tags,priority,type} = req.body
 
-    if(!title || !link || !tags || !priority || !type){
+    if(!title || !link || !tags || !type){
         res.status(422).json({error:"Empty Fields"})
     }
 

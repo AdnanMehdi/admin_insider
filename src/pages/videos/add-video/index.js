@@ -20,7 +20,10 @@ export default function AddVideo(){
     const [title,setTitle] = useState("")
     const [link,setLink] = useState("")
     const [tags,setTags] = useState("")
-    const [checked,setChecked] = useState("")
+    const [checked,setChecked] = useState(false)
+
+
+    console.log(checked)
 
     const handleSubmit = async(e)=>{
         e.preventDefault()
@@ -93,7 +96,7 @@ export default function AddVideo(){
                         </Grid>       
                         <Grid item xs={12} sm={4}>
                         <FormGroup>
-                        <FormControlLabel control={<Switch checked={checked} onChange={()=>setChecked(event.target.checked)} 
+                        <FormControlLabel control={<Switch defaultChecked={checked} checked={checked} onChange={()=>setChecked(event.target.checked)} 
                         color="primary"/>} label="Priority" labelPlacement="top" />
                         </FormGroup>
                         </Grid>       

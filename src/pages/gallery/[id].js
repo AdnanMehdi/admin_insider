@@ -14,6 +14,7 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 import {parseCookies} from 'nookies'
+import jwt from 'jsonwebtoken'
 import { ToastContainer,toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -21,14 +22,16 @@ export default function PhotoId({photoId}){
     // react state to control modal visibility.
     const [showModel,setShowModel] = useState(false)
     const [link,setLink] = useState()
+    const [tags,setTags] = useState()
     const [status,setStatus] = useState()
-    const [checked,setChecked] = useState("")
+    const [checked,setChecked] = useState(photoId.priority)
 
     // geting cookies info with nookies
-    const cookie = parseCookies()
-    const user = cookie.user ? JSON.parse(cookie.user) :""
+    const {token} = parseCookies()
+    const decode = jwt.decode(token,process.env.JWT_SECRET)
+    const role = decode?.role
 
-    // console.log(imageName)
+    console.log(photoId)
 
     //Update Function//
     const handleSubmit = async(e)=>{
@@ -41,8 +44,9 @@ export default function PhotoId({photoId}){
             },
             body:JSON.stringify({
                 link,
-                status,
-                priority:checked
+                tags,
+                status:role == "member" ? "pending" : status ,
+                priority:role == "member" ? false : checked
             })
         })
         const res2 = await res.json()
@@ -59,7 +63,7 @@ export default function PhotoId({photoId}){
                 });
         }
         else{
-            toast.success('Video Updated!', {
+            toast.success('Photo Updated!', {
                 position: "top-center",
                 autoClose: 1500,
                 hideProgressBar: false,
@@ -135,7 +139,7 @@ export default function PhotoId({photoId}){
                             // onChange={handleChange}
                             />
                         </Grid> */}
-                        {user.role == "member" ? ""
+                        {role == "member" ? ""
                         :
                         <Grid item xs={12} sm={6}>
                                 <FormControl fullWidth>
@@ -148,17 +152,21 @@ export default function PhotoId({photoId}){
                                 </FormControl>
                             </Grid>
                         }
-                        {user.role == "member" ? "":
+                        {role == "member" ? "":
                         <Grid item xs={12} sm={6}>
                             <FormGroup>
-                            <FormControlLabel control={<Switch  checked={checked} onChange={()=>setChecked(event.target.checked)} 
+                            <FormControlLabel control={<Switch defaultChecked={checked} checked={checked} onChange={()=>setChecked(event.target.checked)} 
                             color="primary"/>} label="Priority" labelPlacement="top" />
                             </FormGroup>
                         </Grid> }
                         
-                        <Grid item xs={12} sm={12}>
+                        <Grid item xs={12} sm={6}>
                         <TextField fullWidth label='Link' defaultValue={photoId.mediaUrl}
                         onChange={(e)=>setLink(e.target.value)}/>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                        <TextField fullWidth label='Tags' defaultValue={photoId.tags}
+                        onChange={(e)=>setTags(e.target.value)}/>
                         </Grid>
                         <Grid item xs={12} sm={12}>
                         <Button type='submit' variant='contained' sx={{ marginRight: 3.5 }}>

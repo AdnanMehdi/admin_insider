@@ -17,6 +17,7 @@ import {parseCookies} from 'nookies'
 import jwt from 'jsonwebtoken'
 import { ToastContainer,toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import baseUrl from '../../../helpers/baseUrl'
 
 export default function BlogId({blogId}){
     // react state to control modal visibility.
@@ -25,7 +26,7 @@ export default function BlogId({blogId}){
     const [content,setContent] = useState()
     const [tags,setTags] = useState()
     const [status,setStatus] = useState()
-    const [checked,setChecked] = useState("")
+    const [checked,setChecked] = useState(blogId.priority)
 
     // geting cookies info with nookies
     // cookies with nookies for role//
@@ -33,7 +34,6 @@ export default function BlogId({blogId}){
     const decode = jwt.decode(token,process.env.JWT_SECRET)
     const role = decode?.role
 
-    // console.log(role)
 
     //Update Function//
     const handleSubmit = async(e)=>{
@@ -49,8 +49,8 @@ export default function BlogId({blogId}){
                 title,
                 content,
                 tags,
-                status,
-                priority:checked
+                status:role == "member" ? "pending" : status ,
+                priority:role == "member" ? false : checked
             })
         })
         const res2 = await res.json()
@@ -171,7 +171,7 @@ export default function BlogId({blogId}){
 
 export async function getServerSideProps({params:{id}}){
 
-    const res = await fetch(`http://localhost:3000/api/blogs/${id}`)
+    const res = await fetch(`${baseUrl}/api/blogs/${id}`)
     const data = await res.json()
 
     return{

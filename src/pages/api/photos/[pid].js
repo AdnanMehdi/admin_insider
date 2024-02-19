@@ -34,12 +34,13 @@ const deletePhoto = async (req,res) =>{
 
 const updatePhoto = async(req,res)=>{
     const {pid} = req.query
-    const {link,status,priority} = req.body
+    const {link,status,priority,tags} = req.body
 
     try{
         await Photo.findByIdAndUpdate({_id:pid},{
             $set:{
                 mediaUrl:link,
+                tags,
                 status,
                 priority
             }

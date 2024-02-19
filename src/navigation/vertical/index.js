@@ -112,12 +112,10 @@ const Navigation = () => {
     }]
   
 
-  var Condition = role == "member" ? memberArray : rootArray
-
+    var Condition = role == "root" ?  rootArray : memberArray
+    
   // useEffect(()=>{
-  //   return()=>{
 
-  //   }
   // },[Condition])
 
 

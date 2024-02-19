@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { writeFile } from "fs/promises";
 import {join} from 'path'
 import { ToastContainer,toast } from "react-toastify";
+import TextField from '@mui/material/TextField'
 import 'react-toastify/dist/ReactToastify.css';
 import Switch from '@mui/material/Switch';
 import FormGroup from '@mui/material/FormGroup';
@@ -16,53 +17,71 @@ export default function AddPhoto(){
 
     const [media, setMedia] = useState()
     const [selectFiles, setSelectFile] = useState([])
-    const [checked,setChecked] = useState("")
+    const [tags,setTags] = useState("")
+    const [checked,setChecked] = useState(false)
     const ImagePush = []
+
 
     const handleClick = async(e) =>{
         e.preventDefault()
 
-        await MultipleUpload()
+        if(media){
+            await MultipleUpload()
 
-        // storing url images in mongodb.
-        for(var i=0; i<ImagePush.length; i++){
-            const res = await fetch(`http://localhost:3000/api/photo`,{
-                method:"POST",
-                headers:{
-                    'Content-Type':'application/json'
-                },
-                body:JSON.stringify({
-                    mediaUrl:ImagePush[i],
-                    priority:checked,
-                    type:"Images"
-                })            
-            })
-            const res2 = await res.json()
-            if(res2.error){
-                toast.error('Something went wrong!', {
-                    position: "top-center",
-                    autoClose: 1500,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: false,
-                    draggable: false,
-                    progress: undefined,
-                    theme: "colored",
+    
+            // storing url images in mongodb.
+            for(var i=0; i<ImagePush.length; i++){
+                const res = await fetch(`http://localhost:3000/api/photo`,{
+                    method:"POST",
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+                    body:JSON.stringify({
+                        mediaUrl:ImagePush[i],
+                        priority:checked,
+                        tags,
+                        type:"Images"
+                    })            
+                })
+                const res2 = await res.json()
+                if(res2.error){
+                    toast.error('Something went wrong!', {
+                        position: "top-center",
+                        autoClose: 1500,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: false,
+                        draggable: false,
+                        progress: undefined,
+                        theme: "colored",
+                        });
+                }else{
+                    toast.success('Image Uploaded!', {
+                        position: "top-center",
+                        autoClose: 1500,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: false,
+                        draggable: false,
+                        progress: undefined,
+                        theme: "colored",
                     });
-            }else{
-                toast.success('Image Uploaded!', {
-                    position: "top-center",
-                    autoClose: 1500,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: false,
-                    draggable: false,
-                    progress: undefined,
-                    theme: "colored",
+                    setSelectFile("")
+                    setTags("")
+                }
+            }       
+        }else{
+            toast.error('No Photo Selected', {
+                position: "top-center",
+                autoClose: 1500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "colored",
                 });
-                setSelectFile("")
-            }
-        }       
+        }
 
     }
 
@@ -113,7 +132,6 @@ export default function AddPhoto(){
             const res2 = await res.json()
             ImagePush.push(res2.url)    
         }
-        console.log("success")
     }
 
     return(
@@ -122,6 +140,10 @@ export default function AddPhoto(){
             <CardContent>
                 <Grid>
                     <h2>Add Photo</h2>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                <TextField fullWidth label='Tags' required value={tags} 
+                onChange={(e)=>setTags(e.target.value)}/>
                 </Grid>
                 <Grid>
                 <FormGroup>

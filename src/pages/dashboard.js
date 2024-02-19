@@ -27,28 +27,26 @@ import {useRouter} from 'next/router'
 import { useEffect, useState } from 'react'
 
 const Dashboard = () => {
-  const router = useRouter()
+  // const history = useHistory();
   const [reload,setReload] = useState(true)
 
   // const searchParams = useSearchParams()
   // const search = searchParams.get('url')
+  // let path = localStorage.getItem('url')
 
-  console.log(router.asPath,"sa")
+  // console.log(path,"sa")
   
-  const reloadPage= () =>{
-    if(reload){
-      router.replace(router.asPath)
-      console.log("bnaba")
-      setReload(false)
-    }
-  }
-
-  // useEffect(()=>{
-  //   return()=>{
-  //     reloadPage()
-      
+  // const reloadPage= () =>{
+  //   if(reload){
+  //     router.replace(router.asPath)
+  //     console.log("bnaba")
+  //     setReload(false)
   //   }
-  // },[reloadPage])
+  // }
+
+  useEffect(()=>{
+    
+  },[])
 
   return (
     <ApexChartWrapper>
